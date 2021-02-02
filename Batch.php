@@ -12,18 +12,20 @@ class Batch
     protected $date;
     protected $status;
 
-    const DEFAULT_BATCH_STATUS = 'open';
+    protected const DEFAULT_STATUS = 'open';
 
     /**
      * create from data
-     * @param array $data
+     * @param int $batchId
+     * @param string $date
+     * @param string $status
      * @throws Exception
      */
-    function __construct(array $data)
+    function __construct(int $batchId, string $date = '', string $status = '')
     {
-        $this->id = (int)$data[0];
-        $this->date = ($data[1] ? new DateTime($data[1]) : new DateTime());
-        $this->status = ($data[2] ?: DEFAULT_BATCH_STATUS);
+        $this->id = $batchId;
+        $this->date = ($date ? new DateTime($date) : new DateTime());
+        $this->status = ($status ?: self::DEFAULT_STATUS);
     }
 
     /**

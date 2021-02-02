@@ -1,7 +1,5 @@
 <?php
 
-use Exception;
-
 /**
  * Class Courier
  * @author Sandra Koning
@@ -19,17 +17,20 @@ class Courier
 
     /**
      * create courier from id, name, output type and consignment algorithm
-     * @param array $data
+     * @param int $id
+     * @param string $name
+     * @param string $outputType
+     * @param string $algorithm
      */
-    function __construct(array $data)
+    function __construct(int $id, string $name, string $outputType = '', string $algorithm = '')
     {
-        $this->id = $data[0];
-        $this->name = $data[1];
-        $this->outputType = $data[2];
-        $this->consignmentCheck = $data[3];
+        $this->id = $id;
+        $this->name = $name;
+        $this->outputType = $outputType;
+        $this->consignmentCheck = $algorithm;
 
         // assign raw if no or empty output type specified
-        if (!isset($data[2]) || !in_array($data[2], $this->validOutputTypes)) {
+        if (!isset($outputType) || !in_array($outputType, $this->validOutputTypes)) {
             $this->outputType = $this->validOutputTypes[0];
         }
     }
@@ -49,7 +50,7 @@ class Courier
         }
         // use algorithm to create consignment number
         return str_replace(
-            array('COURIER', 'ORDER_NO', 'BATCH_NO'),
+            array('COURIER_', 'ORDER_', 'BATCH_'),
             array($this->name, $order->id, $batch->id),
             $this->consignmentCheck
         );
@@ -78,14 +79,13 @@ class Courier
     }
 
     /**
-     * Get related orders based on courier id
-     * there are better ways to do this with db data or eg Laravel collections
+     * Get related consignments based on courier id
      * @return array
      */
     public function getConsignments(): array
     {
-        $batches = new HandleData('batches');
-        $list = $batches->filter('courier', $this->id);
-        return $list->getConsignments();
+        $data = new HandleData('consignments');
+        $list = $data->filter('courier', $this->id);
+        return $data->getIds($list);
     }
 }

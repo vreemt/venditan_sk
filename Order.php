@@ -15,14 +15,17 @@ class Order
 
     /**
      * create order from data
-     * @param array $data
+     * @param int $id
+     * @param int $courierId
+     * @param int $customerId
+     * @param string $description
      */
-    function __construct(array $data)
+    function __construct(int $id, int $courierId, int $customerId, string $description)
     {
-        $this->id = $data[0];
-        $this->courierId = $data[1];
-        $this->customerId = $data[2];
-        $this->description = $data[3];
+        $this->id = $id;
+        $this->courierId = $courierId;
+        $this->customerId = $customerId;
+        $this->description = $description;
     }
 
     /**

@@ -7,6 +7,7 @@ This collection of code is intended to demonstrate capabilities in response to t
 * code has been developed in PHP7.3
 * 1:1 relation between consignment and order
 * consignment number calculations don't include math
+    * consignment numbers are based on order and batch details
 
 ## Project scenario 
 
@@ -22,12 +23,3 @@ solution in OOPHP
 
 it's easier to see working code with some sample data, so there are a few csv files included
 
-## Out of scope
-
-As noted in the challenge, the following areas have not been handled
-
-* Manipulation of existing data
-* Localisation - VAT, translations, number systems, currencies
-* Authentication, security (oauth, https, csrf, etc), interaction
-* Full test coverage, logging, error handling (unit testing, set up for integration with loggers etc)
-* Deployment (env, platform, CI/CD scripts)

@@ -8,6 +8,7 @@
  */
 class HandleData
 {
+    public $raw = [];
     protected $filePath = 'data/';
     protected $dataType;
     protected $dataTypes = [ 'orders', 'couriers', 'batches', 'consignments' ];
@@ -25,11 +26,73 @@ class HandleData
         $this->dataType = $dataType;
     }
 
+    /**
+     * get data from eg csv
+     * @return array
+     */
     public function get(): array
     {
         $path = $this->filePath . $this->dataType . ".csv";
 
-        return array_map('str_getcsv', file($path));
+        $this->raw = array_map('str_getcsv', file($path));
+        return $this->raw;
+    }
+
+    /**
+     * get single item based on id
+     * @param $id
+     * @return array
+     */
+    public function getById($id): array
+    {
+        if (empty($this->raw)) {
+            $this->get();
+        }
+        $getMatch = $this->filter('id', (int)$id);var_dump($getMatch);
+        return $getMatch[0];
+    }
+
+    /**
+     * only return IDs for the data found
+     * @param array $data - uses raw if empty
+     * @return array
+     */
+    public function getIds(array $data): array
+    {
+        if (empty($data)) {
+            $data = $this->raw;
+        }
+        return array_column($data, 0);
+    }
+
+    /**
+     * filtering of data based on type and field
+     * @param string $field which field to filter
+     * @param string $value what to filter on
+     * @return array
+     */
+    public function filter(string $field, string $value): array
+    {
+        if (!$this->raw) {
+            $this->raw = $this->get();
+        }
+
+        // check which field is where for which data type
+        switch ($this->dataType) {
+            case 'consignments':
+                if ($field == 'courier') {
+                    //courier is the fourth field (index 3) in consignment data
+                    return array_filter($this->raw, function($row) use ($value) {
+                        return $row[3] == $value;
+                    });
+                }
+                break;
+            default:
+                    return array_filter($this->raw, function($row) use ($value) {
+                        return $row[0] == $value;
+                    });
+        }
+        return $this->raw;
     }
 
     /**
@@ -40,7 +103,7 @@ class HandleData
      */
     public function save($data, $ids_included = false): bool
     {
-        //logic to save array of data t
+        //logic to save array of data
         if (!$ids_included) {
             //first, find the current data to create the csv from
             $path = $this->filePath . $this->dataType . ".csv";
@@ -55,7 +118,7 @@ class HandleData
                 $next_id++;
             }
         }
-        //save data
+        // save data
 
         return false;
     }
