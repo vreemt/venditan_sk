@@ -6,6 +6,7 @@ This collection of code is intended to demonstrate capabilities in response to t
 
 * code has been developed in PHP7.3
 * 1:1 relation between consignment and order
+* consignment number calculations don't include math
 
 ## Project scenario 
 

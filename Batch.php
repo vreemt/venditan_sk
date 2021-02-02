@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class Order
+ * Class Batch
  * @author Sandra Koning
  *
  * a batch has limited properties - id, date, status
@@ -12,15 +12,18 @@ class Batch
     protected $date;
     protected $status;
 
+    const DEFAULT_BATCH_STATUS = 'open';
+
     /**
      * create from data
      * @param array $data
+     * @throws Exception
      */
     function __construct(array $data)
     {
         $this->id = (int)$data[0];
-        $this->date = $data[1];
-        $this->status = $data[2];
+        $this->date = ($data[1] ? new DateTime($data[1]) : new DateTime());
+        $this->status = ($data[2] ?: DEFAULT_BATCH_STATUS);
     }
 
     /**
@@ -59,6 +62,7 @@ class Batch
      */
     public function getDate(): DateTime
     {
-        return new DateTime($this->date);
+        return $this->date;
     }
+
 }
