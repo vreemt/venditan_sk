@@ -13,11 +13,12 @@ class Courier
     public $id;
     public $name;
     public $outputType;
+    private $consignmentCheck;
 
     protected $validOutputTypes = [ 'raw', 'json', 'csv' ];
 
     /**
-     * create courier from id, name, output type
+     * create courier from id, name, output type and consignment algorithm
      * @param array $data
      */
     function __construct(array $data)
@@ -25,6 +26,7 @@ class Courier
         $this->id = $data[0];
         $this->name = $data[1];
         $this->outputType = $data[2];
+        $this->consignmentCheck = $data[3];
 
         // assign raw if no or empty output type specified
         if (!isset($data[2]) || !in_array($data[2], $this->validOutputTypes)) {
@@ -35,25 +37,23 @@ class Courier
     /**
      * Get consignment number
      *
+     * @param Batch $batch
      * @param Order $order
      * @throws Exception
      * @return string
      */
-    public function getConsignmentNumber(Order $order): string
+    public function getConsignmentNumber(Batch $batch, Order $order): string
     {
-        if (!$order) {
-            throw new Exception('not found order to create consignment number from');
+        if (!$batch || !$order || !$this->consignmentCheck) {
+            throw new Exception('not found details to create consignment number with');
         }
-        switch ($this->id) {
-            case 1:
-                return "RM" . $order->id;
-            case 2:
-                return "anc" . $order->id;
-            case 3:
-                return "test" .rand(5);
-            default:
-                return 'invalid courier';
-        }
+        // use algorithm to create consignment number
+        return str_replace(
+            array('COURIER', 'ORDER_NO', 'BATCH_NO'),
+            array($this->name, $order->id, $batch->id),
+            $this->consignmentCheck
+        );
+
     }
 
     /**
