@@ -48,8 +48,8 @@ class HandleData
         if (empty($this->raw)) {
             $this->get();
         }
-        $getMatch = $this->filter('id', (int)$id);var_dump($getMatch);
-        return $getMatch[0];
+        $getMatch = $this->filter('id', $id);
+        return array_shift($getMatch);
     }
 
     /**

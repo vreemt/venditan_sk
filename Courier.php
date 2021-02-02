@@ -45,7 +45,7 @@ class Courier
      */
     public function getConsignmentNumber(Batch $batch, Order $order): string
     {
-        if (!$batch || !$order || !$this->consignmentCheck) {
+        if (!$batch || !$order) {
             throw new Exception('not found details to create consignment number with');
         }
         // use algorithm to create consignment number
